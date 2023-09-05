@@ -1,0 +1,35 @@
+name: Continuous Integration
+
+on: [ push, pull_request ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: install dotnet sdk
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            5.0.x
+            6.0.x
+            7.0.x
+
+      - name: build
+        run: dotnet build --configuration Release
+        working-directory: src
+
+      - name: test
+        run: dotnet test --configuration Release --no-build
+        working-directory: src
+
+      - name: package
+        run: dotnet pack --configuration Release --no-build
+        working-directory: src
+        
+        
